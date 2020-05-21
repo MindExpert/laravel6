@@ -40,15 +40,28 @@ class User extends Authenticatable
     public function routeNotificationForNexmo($notification)
     {
         return '355672554090';
+    } 
+
+    // if you have a $user and you wanna grab all the roles associated with them. [$user->roles]
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class)->withTimestamps();
     }
 
-    // public function reply()
-    // {
-    //     return $this->hasMany(Reply::class);
-    // }
-
-    // public function conversation()
-    // {
-    //     return $this->hasMany(Conversation::class);
-    // }
+    // if you can assign a role to a $user. $user->roles()->save($roles)
+    public function assignRole($role)
+    {
+        //sync will replace all the collection in the pivot table with [$role] collection
+        //(by default will drop any thet is not included in the collection) thus set it to false, not to drop anything
+        if(is_string($role)){
+            $role = Role::whereName($role)->firstOrFail();
+        }
+        $this->roles()->sync($role, false); 
+    }
+    
+    //if we wanna find all abilities of a user, we need to call it as a method (not an eloquent relationship)
+    public function abilities()
+    {
+        return $this->roles->map->abilities->flatten()->pluck('name')->unique();
+    }
 }

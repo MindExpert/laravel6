@@ -63,6 +63,7 @@
             }
         </style>
     </head>
+
     <body>
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
@@ -87,6 +88,13 @@
                         Laravel
                     @endauth
                         
+                </div>
+
+                <div>
+                    <h1 class="title m-b-md">Hello There</h1>
+                    @can('edit_forum')
+                        <li class="links"><a href="#">Edit Forum</a></li>
+                    @endcan
                 </div>
 
                 <div class="links">
